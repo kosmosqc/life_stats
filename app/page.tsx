@@ -47,9 +47,30 @@ export default function Page() {
     const airLiters = breaths * tvSafe;
     const oxygenLiters = airLiters * o2Safe;
 
+    const restingPowerW = 100; // puissance moyenne
+    const energyKWh = (hours * restingPowerW) / 1000;
+
     // eau recommandée (juste une plage simple)
     const waterLow = days * 2.0;
     const waterHigh = days * 3.0;
+
+    const flushPerDay = 5; // nombre de chasses par jour
+    const litersPerFlush = 6; // toilette moderne
+    const toiletWater = days * flushPerDay * litersPerFlush;
+
+    const showersPerDay = 1; // douche par jour
+    const litersPerShower = 60; // douche assez efficace
+    const hygieneWater = days * showersPerDay * litersPerShower;
+
+    const totalDailyWater = toiletWater + hygieneWater;
+
+    const awakeFraction = 16 / 24;
+    const awakeMinutes = minutes * awakeFraction;
+    const blinksPerMinute = 15;
+    const eyeBlinks = awakeMinutes * blinksPerMinute;
+
+    const yawnsPerDay = 8;
+    const yawns = days * yawnsPerDay;
 
     return {
       seconds,
@@ -64,6 +85,11 @@ export default function Page() {
       waterLow,
       waterHigh,
       orbitsAroundSun,
+      energyKWh,
+      restingPowerW,
+      totalDailyWater,
+      eyeBlinks,
+      yawns,
     };
   }, [dob, now, bpm, breathsPerMin, tidalVolumeL, o2ExtractFrac]);
 
@@ -224,6 +250,20 @@ export default function Page() {
                 value={formatBig(stats.breaths)}
                 info="Calcul: minutes vécues × respirations/min. Valeur repos typique: 12–16."
               />
+              {mode === "geek" && (
+                <>
+                  <Stat
+                    label="Clignements d’yeux (estimés)"
+                    value={formatBig(stats.eyeBlinks)}
+                    info="Approx: 15 clignements par minute pendant 16 heures d’éveil par jour."
+                  />
+                  <Stat
+                    label="Bâillements (estimés)"
+                    value={formatBig(stats.yawns)}
+                    info="Ordre de grandeur: quelques bâillements par jour, ici on prend ~8."
+                  />
+                </>
+              )}
               <Stat
                 label="Air respiré (L, estimé)"
                 value={formatBig(stats.airLiters)}
@@ -234,19 +274,28 @@ export default function Page() {
                 value={formatBig(stats.oxygenLiters)}
                 info="Estimation grossière: air respiré × fraction d’oxygène “utilisé”. C’est une simplification pour donner un ordre de grandeur."
               />
-
+              <Stat
+                label="Énergie dissipée par ton corps (kWh)"
+                value={formatBig(stats.energyKWh)}
+                info="Calcul: heures vécues × 100 W, converti en kWh. Juste pour l’ordre de grandeur."
+              />
               <div className="h-px bg-slate-800 my-2" />
 
               <Stat
-                label="Eau recommandée (L, 2 à 3 L / jour)"
+                label="Eau consommée (L, 2 à 3 L / jour)"
                 value={`${formatBig(stats.waterLow)} à ${formatBig(
                   stats.waterHigh
                 )}`}
                 info="Plage indicative: 2 à 3 L/jour (inclut souvent l’eau provenant des aliments). Ça varie selon chaleur, activité, etc."
               />
+              {mode === "geek" && (
+                <Stat
+                  label="Eau d’hygiène perso (L, estimé)"
+                  value={formatBig(stats.totalDailyWater)}
+                  info="Toilette + douche, basé sur des moyennes de consommation."
+                />
+              )}
             </div>
-
-          
           </section>
         </div>
       </div>
