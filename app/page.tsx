@@ -214,8 +214,7 @@ export default function Page() {
                 </button>
               </div>
 
-              <InfoTip text="Classique : les stats principales, présentées de façon compacte. Geek : ajoute des unités détaillées, des hypothèses et plus de chiffres." />
-
+              <InfoTip text="Classique: les stats principales, rapide et lisible. Geek: plus de détails, unités, hypothèses et chiffres avancés." />
             </div>
           </section>
 
@@ -376,19 +375,18 @@ function Stat({
   info?: string;
 }) {
   return (
-    <div className="flex items-baseline justify-between rounded-xl bg-slate-950/50 px-4 py-3 ring-1 ring-slate-800">
+    <div className="grid grid-cols-[minmax(0,1fr)_auto_auto] gap-x-3 items-baseline rounded-xl bg-slate-950/50 px-4 py-3 ring-1 ring-slate-800">
       <div className="flex items-center text-sm text-slate-300">
         {label}
         {info ? <InfoTip text={info} /> : null}
       </div>
-      <div className="flex items-baseline gap-2">
-        <span className="text-lg font-semibold text-slate-100">{value}</span>
-        {unit && <span className="text-xs text-slate-400">{unit}</span>}
+      <div className="text-lg font-semibold text-slate-100 text-right">
+        {value}
       </div>
+      {unit && <div className="text-xs text-slate-400 text-right">{unit}</div>}
     </div>
   );
 }
-
 
 function InfoTip({ text }: { text: string }) {
   return (
